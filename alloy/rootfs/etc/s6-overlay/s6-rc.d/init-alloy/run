@@ -12,12 +12,18 @@ mkdir -p "${CONFIG_DIR}" /data/alloy
 LOKI_URL=$(jq -r '.loki_url' "${OPTIONS_FILE}")
 LOG_LEVEL=$(jq -r '.log_level // "info"' "${OPTIONS_FILE}")
 HOST_LABEL=$(jq -r '.host_label // "homeassistant"' "${OPTIONS_FILE}")
+JOURNAL_MAX_AGE=$(jq -r '.journal_max_age // "7h"' "${OPTIONS_FILE}")
 ADDITIONAL_CONFIG=$(jq -r '.additional_config // ""' "${OPTIONS_FILE}")
 CA_CERT_FILE=$(jq -r '.ca_cert_file // ""' "${OPTIONS_FILE}")
 
 # Default the host label when unset/empty so upgrades stay compatible
 if [ -z "${HOST_LABEL}" ] || [ "${HOST_LABEL}" = "null" ]; then
     HOST_LABEL="homeassistant"
+fi
+
+# Default the journal backfill window when unset/empty (Alloy's own default is 7h)
+if [ -z "${JOURNAL_MAX_AGE}" ] || [ "${JOURNAL_MAX_AGE}" = "null" ]; then
+    JOURNAL_MAX_AGE="7h"
 fi
 
 # Validate required options
@@ -51,6 +57,7 @@ echo " Loki URL:      ${LOKI_URL}"
 echo " Journal path:  ${JOURNAL_PATH}"
 echo " Log level:     ${LOG_LEVEL}"
 echo " Host label:    ${HOST_LABEL}"
+echo " Journal max age: ${JOURNAL_MAX_AGE}"
 if [ -n "${CA_CERT_FILE}" ] && [ "${CA_CERT_FILE}" != "null" ]; then
     echo " CA cert file:  ${CA_CERT_FILE}"
 fi
@@ -84,6 +91,7 @@ loki.write "default" {
 // --- Read systemd journal ---
 loki.source.journal "system" {
   path          = "${JOURNAL_PATH}"
+  max_age       = "${JOURNAL_MAX_AGE}"
   forward_to    = [loki.process.default.receiver]
   relabel_rules = loki.relabel.journal.rules
   labels = {

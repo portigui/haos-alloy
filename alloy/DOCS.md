@@ -23,6 +23,13 @@ changes.
   `ha-condo`) when you run more than one Home Assistant instance shipping to
   the same Loki, so each instance's logs stay separable (`{host="ha-condo"}`)
   and don't collide under `{host="homeassistant"}`.
+- **journal_max_age**: How far back to back-fill the journal on first start (or
+  after a restart when the saved read position is older than this window).
+  Default: `7h` (Alloy's own default). The read position is persisted across
+  restarts, so a normal restart resumes with no gap and no re-shipping
+  regardless of this value — it only bounds how much history is recovered after
+  a long outage. Increase (e.g. `48h`) for more cold-start recovery margin.
+  Accepts a Go duration string (`7h`, `24h`, `48h`, `168h`).
 - **ca_cert_file**: Path to a custom CA certificate file for TLS connections
   to Loki (e.g., `/ssl/my-ca.crt`). See [TLS / Custom CA Certificates](#tls--custom-ca-certificates) below.
 - **additional_config**: Extra Alloy config blocks to append (advanced users)

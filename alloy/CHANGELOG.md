@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.3.0
+
+- Add `journal_max_age` option (default `7h`) to control how far back the
+  journal is back-filled on first start / after a long outage. Maps to the
+  `loki.source.journal` `max_age` argument. Read position is persisted
+  (`--storage.path=/data/alloy`), so normal restarts still resume gap-free.
+
 ## 1.2.0
 
 - Add `host_label` option (default `homeassistant`) to override the static
