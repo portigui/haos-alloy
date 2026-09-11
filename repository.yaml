@@ -1,4 +1,4 @@
 ---
-name: Grafana Alloy for Home Assistant
-url: https://github.com/Whizzlefred/haos-alloy
-maintainer: Whizzlefred
+name: Grafana Alloy for Home Assistant (portigui fork)
+url: https://github.com/portigui/haos-alloy
+maintainer: portigui

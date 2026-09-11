@@ -18,6 +18,11 @@ changes.
 
 - **log_level**: Alloy log verbosity (`debug`, `info`, `warn`, `error`).
   Default: `info`
+- **host_label**: Value of the static `host` label applied to every shipped
+  log line. Default: `homeassistant`. Set this to a unique value (e.g.
+  `ha-condo`) when you run more than one Home Assistant instance shipping to
+  the same Loki, so each instance's logs stay separable (`{host="ha-condo"}`)
+  and don't collide under `{host="homeassistant"}`.
 - **ca_cert_file**: Path to a custom CA certificate file for TLS connections
   to Loki (e.g., `/ssl/my-ca.crt`). See [TLS / Custom CA Certificates](#tls--custom-ca-certificates) below.
 - **additional_config**: Extra Alloy config blocks to append (advanced users)
@@ -28,7 +33,7 @@ All journal entries are shipped to Loki with these labels:
 
 | Label              | Source                                    |
 |--------------------|-------------------------------------------|
-| `host`             | `homeassistant` (static)                  |
+| `host`             | `host_label` option (default `homeassistant`) |
 | `env`              | `prod` (static)                           |
 | `source_type`      | `journald` (static)                       |
 | `service`          | `homeassistant` (static)                  |

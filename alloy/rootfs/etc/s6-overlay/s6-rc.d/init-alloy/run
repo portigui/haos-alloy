@@ -11,8 +11,14 @@ mkdir -p "${CONFIG_DIR}" /data/alloy
 # Read options
 LOKI_URL=$(jq -r '.loki_url' "${OPTIONS_FILE}")
 LOG_LEVEL=$(jq -r '.log_level // "info"' "${OPTIONS_FILE}")
+HOST_LABEL=$(jq -r '.host_label // "homeassistant"' "${OPTIONS_FILE}")
 ADDITIONAL_CONFIG=$(jq -r '.additional_config // ""' "${OPTIONS_FILE}")
 CA_CERT_FILE=$(jq -r '.ca_cert_file // ""' "${OPTIONS_FILE}")
+
+# Default the host label when unset/empty so upgrades stay compatible
+if [ -z "${HOST_LABEL}" ] || [ "${HOST_LABEL}" = "null" ]; then
+    HOST_LABEL="homeassistant"
+fi
 
 # Validate required options
 if [ -z "${LOKI_URL}" ] || [ "${LOKI_URL}" = "null" ]; then
@@ -44,6 +50,7 @@ echo " Grafana Alloy for Home Assistant"
 echo " Loki URL:      ${LOKI_URL}"
 echo " Journal path:  ${JOURNAL_PATH}"
 echo " Log level:     ${LOG_LEVEL}"
+echo " Host label:    ${HOST_LABEL}"
 if [ -n "${CA_CERT_FILE}" ] && [ "${CA_CERT_FILE}" != "null" ]; then
     echo " CA cert file:  ${CA_CERT_FILE}"
 fi
@@ -80,7 +87,7 @@ loki.source.journal "system" {
   forward_to    = [loki.process.default.receiver]
   relabel_rules = loki.relabel.journal.rules
   labels = {
-    host        = "homeassistant",
+    host        = "${HOST_LABEL}",
     env         = "prod",
     source_type = "journald",
   }

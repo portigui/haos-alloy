@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.2.0
+
+- Add `host_label` option (default `homeassistant`) to override the static
+  `host` label. Lets multiple HA instances ship to the same Loki without
+  colliding under `{host="homeassistant"}` (e.g. set `host_label: ha-condo`).
+- Fork of Whizzlefred/haos-alloy.
+
 ## 1.1.0
 
 - Add `ca_cert_file` option for custom CA certificate support (Closes #7)
