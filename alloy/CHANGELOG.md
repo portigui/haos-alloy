@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.3.1
+
+- Run Alloy with `--disable-reporting`: no anonymous usage telemetry to
+  `stats.grafana.org` (commonly DNS-blocked, so the retries just flood the
+  resolver's query log).
+
 ## 1.3.0
 
 - Add `journal_max_age` option (default `7h`) to control how far back the
